@@ -21,10 +21,10 @@ export default class registroPeriodo extends Component{
     this.registrarAhorro = this.registrarAhorro.bind(this);
     this.registrarPrestamo = this.registrarPrestamo.bind(this);
 
-    //this.borrarIngreso = this.borrarIngreso.bind(this);
-    //this.borrarGasto = this.borrarGasto.bind(this);
-    //this.borrarAhorro = this.borrarAhorro.bind(this);
-    //this.borrarPrestamo = this.borrarPrestamo.bind(this);
+    this.borrarIngreso = this.borrarIngreso.bind(this);
+    this.borrarGasto = this.borrarGasto.bind(this);
+    this.borrarAhorro = this.borrarAhorro.bind(this);
+    this.borrarPrestamo = this.borrarPrestamo.bind(this);
 
   }
 
@@ -48,6 +48,18 @@ export default class registroPeriodo extends Component{
 
   }
 
+  borrarIngreso(ingreso){
+
+    let ingresos = this.state.ingresosFijos.slice(0,this.state.ingresosFijos.length);
+
+    ingresos.splice(ingreso,1);
+
+    this.setState({
+      ingresosFijos:ingresos,
+    });
+
+  }
+
   registrarGasto(event){
 
     event.preventDefault();
@@ -65,6 +77,18 @@ export default class registroPeriodo extends Component{
     });
 
     event.target.reset();
+  }
+
+  borrarGasto(gasto){
+
+    let gastos = this.state.gastosFijos.slice(0,this.state.gastosFijos.length);
+
+    gastos.splice(gasto,1);
+
+    this.setState({
+      gastosFijos:gastos,
+    });
+
   }
 
   registrarAhorro(event){
@@ -86,6 +110,18 @@ export default class registroPeriodo extends Component{
     event.target.reset();
   }
 
+  borrarAhorro(ahorro){
+
+    let ahorros = this.state.ahorroInicial.slice(0,this.state.ahorroInicial.length);
+
+    ahorros.splice(ahorro,1);
+
+    this.setState({
+      ahorroInicial:ahorros,
+    });
+
+  }
+
   registrarPrestamo(event){
 
     event.preventDefault();
@@ -105,13 +141,25 @@ export default class registroPeriodo extends Component{
     event.target.reset();
   }
 
+  borrarPrestamo(prestamo){
+
+    let prestamos = this.state.prestamosInicial.slice(0,this.state.prestamosInicial.length);
+
+    prestamos.splice(prestamo,1);
+
+    this.setState({
+      prestamosInicial:prestamos,
+    });
+
+  }
+
   render(){
     return(
       <div>
-        <Ingresos registrarIngreso={(event)=>this.registrarIngreso(event)} listaIngresos={this.state.ingresosFijos}/>
-        <Gastos registrarGasto={(event)=>this.registrarGasto(event)} listaGastos={this.state.gastosFijos}/>
-        <Ahorros registrarAhorro={(event)=>this.registrarAhorro(event)} listaAhorros={this.state.ahorroInicial}/>
-        <Prestamos registrarPrestamo={(event)=>this.registrarPrestamo(event)} listaPrestamos={this.state.prestamosInicial}/>
+        <Ingresos borrarIngreso={()=>this.borrarIngreso()} registrarIngreso={(event)=>this.registrarIngreso(event)} listaIngresos={this.state.ingresosFijos}/>
+        <Gastos borrarGasto={()=>this.borrarGasto()} registrarGasto={(event)=>this.registrarGasto(event)} listaGastos={this.state.gastosFijos}/>
+        <Ahorros borrarAhorro={()=>this.borrarAhorro()} registrarAhorro={(event)=>this.registrarAhorro(event)} listaAhorros={this.state.ahorroInicial}/>
+        <Prestamos borrarPrestamo={()=>this.borrarPrestamo()} registrarPrestamo={(event)=>this.registrarPrestamo(event)} listaPrestamos={this.state.prestamosInicial}/>
       </div>
     );
   }
@@ -139,10 +187,8 @@ function Ingresos(props) {
         </div>
 
         <input type="submit" value="Enviar"/>
-
       </form>
       <table>
-
         <thead>
           <tr>
             <td>Concepto</td>
@@ -158,6 +204,7 @@ function Ingresos(props) {
                   <tr key={key}>
                     <td>{ingreso.concepto}</td>
                     <td>${ingreso.importe}</td>
+                    <td><button onClick={()=>props.borrarIngreso(key)}>Borrar</button></td>
                   </tr>
                 );
               }
@@ -210,6 +257,7 @@ function Gastos(props) {
                   <tr key={key}>
                     <td>{gasto.concepto}</td>
                     <td>${gasto.importe}</td>
+                    <td><button onClick={()=>props.borrarGasto(key)}>Borrar</button></td>
                   </tr>
                 );
               }
@@ -262,6 +310,7 @@ function Ahorros(props) {
                   <tr key={key}>
                     <td>{ahorro.concepto}</td>
                     <td>${ahorro.importe}</td>
+                    <td><button onClick={()=>props.borrarAhorro(key)}>Borrar</button></td>
                   </tr>
                 );
               }
@@ -314,6 +363,7 @@ function Prestamos(props) {
                   <tr key={key}>
                     <td>{prestamo.concepto}</td>
                     <td>${prestamo.importe}</td>
+                    <td><button onClick={()=>props.borrarPrestamo(key)}>Borrar</button></td>
                   </tr>
                 );
               }

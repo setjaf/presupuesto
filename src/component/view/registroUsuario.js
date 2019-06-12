@@ -1,16 +1,21 @@
 import React,{Component} from 'react';
+import {Switch, Route} from 'react-router-dom';
+import Registro from './components/Registro';
 
 export default class registroUsuario extends Component{
 
   render(){
     return(
-      <div>
+      <Switch>
+        <Route path='/' component={Registro}/>
+      </Switch>
+      /*<div>
         <Ingresos borrarIngreso={()=>this.props.borrarIngreso()} registrarIngreso={(event)=>this.props.registrarIngreso(event)} listaIngresos={this.props.state.ingresosFijos}/>
         <Gastos borrarGasto={()=>this.props.borrarGasto()} registrarGasto={(event)=>this.props.registrarGasto(event)} listaGastos={this.props.state.gastosFijos}/>
         <Ahorros borrarAhorro={()=>this.props.borrarAhorro()} registrarAhorro={(event)=>this.props.registrarAhorro(event)} listaAhorros={this.props.state.ahorroInicial}/>
         <Prestamos borrarPrestamo={()=>this.props.borrarPrestamo()} registrarPrestamo={(event)=>this.props.registrarPrestamo(event)} listaPrestamos={this.props.state.prestamosInicial}/>
         <Total listaIngresos={this.props.state.ingresosFijos} listaGastos={this.props.state.gastosFijos} listaAhorros={this.props.state.ahorroInicial} listaPrestamos={this.props.state.prestamosInicial} />
-      </div>
+      </div>*/
     );
   }
 

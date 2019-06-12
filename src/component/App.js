@@ -2,7 +2,9 @@ import React, {Component} from 'react';
 import UsuarioNuevo from './view/registroUsuario';
 import {FDtoJSON} from './view/functions/FDtoJSON.js';
 
-import {Route} from 'react-router-dom';
+import Inicio from './view/Inicio';
+
+import {Switch,Route} from 'react-router-dom';
 
 export default class App extends Component{
   constructor(props){
@@ -158,8 +160,9 @@ export default class App extends Component{
 
   render(){
     return(
+      <Switch>
         <Route
-          path="/nuevoUsuario"
+          path="/nuevoUsuario/"
           render={
             props=>
             <UsuarioNuevo
@@ -176,6 +179,11 @@ export default class App extends Component{
           }
         />
 
+        <Route
+          path="/"
+          component={Inicio}
+        />
+      </Switch>
     );
   }
 }

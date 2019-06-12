@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
-import Periodo from './view/registroPeriodo';
+import UsuarioNuevo from './view/registroUsuario';
 import {FDtoJSON} from './view/functions/FDtoJSON.js';
+
+import {Route} from 'react-router-dom';
 
 export default class App extends Component{
   constructor(props){
@@ -156,17 +158,24 @@ export default class App extends Component{
 
   render(){
     return(
-      <Periodo
-        state={this.state}
-        registrarIngreso={(event)=>this.registrarIngreso(event)}
-        borrarIngreso={(ingreso)=>this.borrarIngreso(ingreso)}
-        registrarGasto={(event)=>this.registrarGasto(event)}
-        borrarGasto={(gasto)=>this.borrarGasto(gasto)}
-        registrarAhorro={(event)=>this.registrarAhorro(event)}
-        borrarAhorro={(ahorro)=>this.borrarGasto(ahorro)}
-        registrarPrestamo={(event)=>this.registrarPrestamo(event)}
-        borrarPrestamo={(prestamo)=>this.borrarGasto(prestamo)}        
-      />
+        <Route
+          path="/nuevoUsuario"
+          render={
+            props=>
+            <UsuarioNuevo
+              state={this.state}
+              registrarIngreso={(event)=>this.registrarIngreso(event)}
+              borrarIngreso={(ingreso)=>this.borrarIngreso(ingreso)}
+              registrarGasto={(event)=>this.registrarGasto(event)}
+              borrarGasto={(gasto)=>this.borrarGasto(gasto)}
+              registrarAhorro={(event)=>this.registrarAhorro(event)}
+              borrarAhorro={(ahorro)=>this.borrarGasto(ahorro)}
+              registrarPrestamo={(event)=>this.registrarPrestamo(event)}
+              borrarPrestamo={(prestamo)=>this.borrarGasto(prestamo)}
+            />
+          }
+        />
+
     );
   }
 }

@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 
-export default class registroPeriodo extends Component{
-  
+export default class registroUsuario extends Component{
+
   render(){
     return(
       <div>
@@ -9,6 +9,7 @@ export default class registroPeriodo extends Component{
         <Gastos borrarGasto={()=>this.props.borrarGasto()} registrarGasto={(event)=>this.props.registrarGasto(event)} listaGastos={this.props.state.gastosFijos}/>
         <Ahorros borrarAhorro={()=>this.props.borrarAhorro()} registrarAhorro={(event)=>this.props.registrarAhorro(event)} listaAhorros={this.props.state.ahorroInicial}/>
         <Prestamos borrarPrestamo={()=>this.props.borrarPrestamo()} registrarPrestamo={(event)=>this.props.registrarPrestamo(event)} listaPrestamos={this.props.state.prestamosInicial}/>
+        <Total listaIngresos={this.props.state.ingresosFijos} listaGastos={this.props.state.gastosFijos} listaAhorros={this.props.state.ahorroInicial} listaPrestamos={this.props.state.prestamosInicial} />
       </div>
     );
   }
@@ -222,5 +223,36 @@ function Prestamos(props) {
 
       </table>
     </div>
+  );
+}
+
+function Total(props){
+  return(
+    <table>
+
+      <thead>
+        <tr>
+          <td>Concepto</td>
+          <td>Importe</td>
+        </tr>
+      </thead>
+
+      <tbody>
+        {
+          props.listaPrestamos.map(
+            (prestamo, key)=>{
+              return(
+                <tr key={key}>
+                  <td>{prestamo.concepto}</td>
+                  <td>${prestamo.importe}</td>
+                  <td><button onClick={()=>props.borrarPrestamo(key)}>Borrar</button></td>
+                </tr>
+              );
+            }
+          )
+        }
+      </tbody>
+
+    </table>
   );
 }

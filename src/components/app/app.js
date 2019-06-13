@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import UsuarioNuevo from './view/registroUsuario';
-import {FDtoJSON} from './view/functions/FDtoJSON.js';
+import UsuarioNuevo from './registroUsuario/registroUsuario';
+import {FDtoJSON} from '../../utils/FDtoJSON.js';
 
-import Inicio from './view/Inicio';
+import Inicio from './inicio/inicio';
 
 import {Switch,Route} from 'react-router-dom';
 
@@ -12,6 +12,8 @@ export default class App extends Component{
     this.state = {
       nombre:null,
       correo:null,
+      imgPerfil:null,
+      uid:null,
       periodo:{
         duracion:null,
       },
@@ -30,6 +32,7 @@ export default class App extends Component{
     this.borrarGasto = this.borrarGasto.bind(this);
     this.borrarAhorro = this.borrarAhorro.bind(this);
     this.borrarPrestamo = this.borrarPrestamo.bind(this);
+    this.logUsuario = this.logUsuario.bind(this);
 
   }
 
@@ -158,6 +161,15 @@ export default class App extends Component{
 
   }
 
+  logUsuario(user){
+      this.setState({
+        nombre: user.displayName,
+        correo: user.email,
+        imgPerfil: user.photoURL,
+        uid: user.uid,
+      });
+  }
+
   render(){
     return(
       <Switch>
@@ -175,6 +187,7 @@ export default class App extends Component{
               borrarAhorro={(ahorro)=>this.borrarGasto(ahorro)}
               registrarPrestamo={(event)=>this.registrarPrestamo(event)}
               borrarPrestamo={(prestamo)=>this.borrarGasto(prestamo)}
+              logUsuario={(user)=>this.logUsuario(user)}
             />
           }
         />

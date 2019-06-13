@@ -7,10 +7,6 @@ export default class registroUsuario extends Component {
 
     super(props);
 
-    this.state = ({
-      usuario:null,
-    })
-
     this.handleClick = this.handleClick.bind(this);
   }
 
@@ -23,11 +19,7 @@ export default class registroUsuario extends Component {
 
         let user = result.user;
 
-        esto.setState({
-          usuario:user,
-        });
-
-        console.log(esto.state);
+        esto.props.logUsuario(user);
 
       }
 

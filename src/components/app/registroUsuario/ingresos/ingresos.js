@@ -81,7 +81,7 @@ export default class Ingresos extends Component{
                       <tr key={key}>
                         <td>{ingreso.concepto}</td>
                         <td>${ingreso.importe}</td>
-                        <td>${ingreso.periodicidad}</td>
+                        <td>{ingreso.periodicidad}</td>
                         <td><button onClick={()=>this.props.borrarIngreso(key)}>Borrar</button></td>
                       </tr>
                     );

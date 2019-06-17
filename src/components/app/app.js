@@ -39,12 +39,14 @@ export default class App extends Component{
     this.borrarPrestamo = this.borrarPrestamo.bind(this);
     this.logUsuario = this.logUsuario.bind(this);
 
+    this.userDoc = null;
+    //Cuando el usuario inicia sesión se hace la referencia al documento del ususario en la base de datos
   }
 
   inicializarIngresos(){
     const esto = this;
     if(this.state.uid){
-      const docRef = db.collection('Usuarios').doc(this.state.uid).collection('Ingresos');
+      const docRef = this.userDoc.collection('Ingresos');
       docRef.get().then((collection)=>{
         let ingresos = [];
         collection.docs.map(
@@ -71,9 +73,7 @@ export default class App extends Component{
 
     let ingresos = this.state.ingresosFijos.slice(0,this.state.ingresosFijos.length);
 
-    const ingreso = FDtoJSON(
-      new FormData(event.target)
-    );
+    const ingreso = FDtoJSON(new FormData(event.target));
 
     db.collection("Usuarios").doc(this.state.uid).collection("Ingresos").add({
       concepto: ingreso.concepto,
@@ -83,7 +83,7 @@ export default class App extends Component{
       (docRef)=>{
         alert("Ingreso guardado");
 
-        ingreso.id = docRef.id
+        ingreso.id = docRef.id;
 
         ingresos.push(
           ingreso
@@ -97,55 +97,107 @@ export default class App extends Component{
     ).catch(
       ()=>alert("No se pudo guardar el ingreso")
     );
-
-
-
-
-
     event.target.reset();
 
   }
 
   borrarIngreso(ingreso){
 
+    const esto = this;
+
     let ingresos = this.state.ingresosFijos.slice(0,this.state.ingresosFijos.length);
 
-    ingresos.splice(ingreso,1);
+    console.log(ingresos);
+    console.log(ingreso);
 
-    this.setState({
-      ingresosFijos:ingresos,
-    });
+    this.userDoc.collection("Ingresos").doc(ingresos[ingreso].id).delete().then(
+      ()=>{
+        ingresos.splice(ingreso,1);
+
+        esto.setState({
+          ingresosFijos:ingresos,
+        });
+      }
+    );
+
+  }
+
+  inicializarGastos(){
+    const esto = this;
+    if(this.state.uid){
+      const docRef = this.userDoc.collection('Gastos');
+      docRef.get().then((collection)=>{
+        let gastos = [];
+        collection.docs.map(
+          (doc)=>{
+            const data = doc.data();
+            let gasto = {...data}
+            gasto.id = doc.id;
+            gastos.push(gasto);
+            return gasto;
+          }
+        );
+        esto.setState({
+          gastosFijos:gastos,
+        });
+      });
+    }
 
   }
 
   registrarGasto(event){
 
+    const esto = this;
+
     event.preventDefault();
 
     let gastos = this.state.gastosFijos.slice(0,this.state.gastosFijos.length);
 
-    gastos.push(
-      FDtoJSON(
-        new FormData(event.target)
-      )
+    const gasto = FDtoJSON(new FormData(event.target));
+
+    db.collection("Usuarios").doc(this.state.uid).collection("Gastos").add({
+      concepto: gasto.concepto,
+      importe: gasto.importe,
+      periodicidad: gasto.periodicidad,
+    }).then(
+      (docRef)=>{
+        alert("Gasto guardado");
+
+        gasto.id = docRef.id;
+
+        gastos.push(
+          gasto
+        );
+
+        esto.setState({
+          gastosFijos:gastos,
+        });
+
+      }
+    ).catch(
+      ()=>alert("No se pudo guardar el gasto")
     );
-
-    this.setState({
-      gastosFijos:gastos,
-    });
-
     event.target.reset();
   }
 
   borrarGasto(gasto){
 
+    const esto = this;
+
     let gastos = this.state.gastosFijos.slice(0,this.state.gastosFijos.length);
 
-    gastos.splice(gasto,1);
+    console.log(gastos);
+    console.log(gasto);
 
-    this.setState({
-      gastosFijos:gastos,
-    });
+    this.userDoc.collection("Gastos").doc(gastos[gasto].id).delete().then(
+      ()=>{
+        gastos.splice(gasto,1);
+
+        esto.setState({
+          gastosFijos:gastos,
+        });
+      }
+    );
 
   }
 
@@ -219,6 +271,10 @@ export default class App extends Component{
         imgPerfil: user.photoURL,
         uid: user.uid,
       });
+      if (this.state.logged) {
+        this.userDoc = db.collection('Usuarios').doc(this.state.uid);
+      }
+
   }
 
   render(){
@@ -234,6 +290,7 @@ export default class App extends Component{
               inicializarIngresos={(event)=>this.inicializarIngresos(event)}
               registrarIngreso={(event)=>this.registrarIngreso(event)}
               borrarIngreso={(ingreso)=>this.borrarIngreso(ingreso)}
+              inicializarGastos={(event)=>this.inicializarGastos(event)}
               registrarGasto={(event)=>this.registrarGasto(event)}
               borrarGasto={(gasto)=>this.borrarGasto(gasto)}
               registrarAhorro={(event)=>this.registrarAhorro(event)}

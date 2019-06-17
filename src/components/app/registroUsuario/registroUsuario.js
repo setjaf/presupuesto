@@ -2,6 +2,7 @@ import React,{Component} from 'react';
 import {Switch, Route, Redirect} from 'react-router-dom';
 import Registro from './registro/registro';
 import Ingresos from './ingresos/ingresos'
+import Gastos from './gastos/gastos'
 
 export default class registroUsuario extends Component{
 
@@ -13,7 +14,18 @@ export default class registroUsuario extends Component{
           render={
             (props)=>
               this.props.state.logged?(
-                <Ingresos {...props}  inicializarIngresos={()=>this.props.inicializarIngresos()} borrarIngreso={()=>this.props.borrarIngreso()} registrarIngreso={(event)=>this.props.registrarIngreso(event)} listaIngresos={this.props.state.ingresosFijos} state={this.props.state}/>
+                <Ingresos {...props}  inicializarIngresos={()=>this.props.inicializarIngresos()} borrarIngreso={(ingreso)=>this.props.borrarIngreso(ingreso)} registrarIngreso={(event)=>this.props.registrarIngreso(event)} listaIngresos={this.props.state.ingresosFijos} state={this.props.state}/>
+              ):(
+                <Redirect to={'/'}/>
+              )
+          }
+        />
+        <Route
+          path = {`${this.props.match.url}/registrarGastos`}
+          render={
+            (props)=>
+              this.props.state.logged?(
+                <Gastos {...props}  inicializarGastos={()=>this.props.inicializarGastos()} borrarGasto={(gasto)=>this.props.borrarGasto(gasto)} registrarGasto={(event)=>this.props.registrarGasto(event)} listaGastos={this.props.state.gastosFijos} state={this.props.state}/>
               ):(
                 <Redirect to={'/'}/>
               )
@@ -94,56 +106,7 @@ function Ahorros(props) {
 }
 
 function Prestamos(props) {
-  return(
-    <div>
-      <form onSubmit={props.registrarPrestamo}>
-        <h4>Prestamos fijos en el periodo:</h4>
-
-        <div>
-          <label>
-            Concepto:
-          </label>
-          <input type="text" name="concepto"/>
-        </div>
-
-        <div>
-          <label>
-            Importe:
-          </label>
-          <input type="text" name="importe"/>
-        </div>
-
-        <input type="submit" value="Enviar"/>
-
-      </form>
-      <table>
-
-        <thead>
-          <tr>
-            <td>Concepto</td>
-            <td>Importe</td>
-          </tr>
-        </thead>
-
-        <tbody>
-          {
-            props.listaPrestamos.map(
-              (prestamo, key)=>{
-                return(
-                  <tr key={key}>
-                    <td>{prestamo.concepto}</td>
-                    <td>${prestamo.importe}</td>
-                    <td><button onClick={()=>props.borrarPrestamo(key)}>Borrar</button></td>
-                  </tr>
-                );
-              }
-            )
-          }
-        </tbody>
-
-      </table>
-    </div>
-  );
+  
 }
 
 function Total(props){

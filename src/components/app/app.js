@@ -1,15 +1,20 @@
 import React, {Component} from 'react';
 import UsuarioNuevo from './registroUsuario/registroUsuario';
 import {FDtoJSON} from '../../utils/FDtoJSON.js';
+import firebase from '../../utils/firebase.js';
+/*import * as admin from 'firebase-admin';
+import * as functions from 'firebase-functions';*/
 
 import Inicio from './inicio/inicio';
-
 import {Switch,Route} from 'react-router-dom';
+
+const db = firebase.firestore();
 
 export default class App extends Component{
   constructor(props){
     super(props);
     this.state = {
+      logged:false,
       nombre:null,
       correo:null,
       imgPerfil:null,
@@ -36,21 +41,66 @@ export default class App extends Component{
 
   }
 
+  inicializarIngresos(){
+    const esto = this;
+    if(this.state.uid){
+      const docRef = db.collection('Usuarios').doc(this.state.uid).collection('Ingresos');
+      docRef.get().then((collection)=>{
+        let ingresos = [];
+        collection.docs.map(
+          (doc)=>{
+            const data = doc.data();
+            let ingreso = {...data}
+            ingreso.id = doc.id;
+            ingresos.push(ingreso);
+            return ingreso;
+          }
+        );
+        esto.setState({
+          ingresosFijos:ingresos,
+        });
+      });
+    }
+
+  }
+
   registrarIngreso(event){
+    const esto = this;
 
     event.preventDefault();
 
     let ingresos = this.state.ingresosFijos.slice(0,this.state.ingresosFijos.length);
 
-    ingresos.push(
-      FDtoJSON(
-        new FormData(event.target)
-      )
+    const ingreso = FDtoJSON(
+      new FormData(event.target)
     );
 
-    this.setState({
-      ingresosFijos:ingresos,
-    });
+    db.collection("Usuarios").doc(this.state.uid).collection("Ingresos").add({
+      concepto: ingreso.concepto,
+      importe: ingreso.importe,
+      periodicidad: ingreso.periodicidad,
+    }).then(
+      (docRef)=>{
+        alert("Ingreso guardado");
+
+        ingreso.id = docRef.id
+
+        ingresos.push(
+          ingreso
+        );
+
+        esto.setState({
+          ingresosFijos:ingresos,
+        });
+
+      }
+    ).catch(
+      ()=>alert("No se pudo guardar el ingreso")
+    );
+
+
+
+
 
     event.target.reset();
 
@@ -163,6 +213,7 @@ export default class App extends Component{
 
   logUsuario(user){
       this.setState({
+        logged:true,
         nombre: user.displayName,
         correo: user.email,
         imgPerfil: user.photoURL,
@@ -174,11 +225,13 @@ export default class App extends Component{
     return(
       <Switch>
         <Route
-          path="/nuevoUsuario/"
+          path="/nuevoUsuario"
           render={
-            props=>
-            <UsuarioNuevo
+            (props)=>
+            (<UsuarioNuevo
+              {...props}
               state={this.state}
+              inicializarIngresos={(event)=>this.inicializarIngresos(event)}
               registrarIngreso={(event)=>this.registrarIngreso(event)}
               borrarIngreso={(ingreso)=>this.borrarIngreso(ingreso)}
               registrarGasto={(event)=>this.registrarGasto(event)}
@@ -188,11 +241,12 @@ export default class App extends Component{
               registrarPrestamo={(event)=>this.registrarPrestamo(event)}
               borrarPrestamo={(prestamo)=>this.borrarGasto(prestamo)}
               logUsuario={(user)=>this.logUsuario(user)}
-            />
+            />)
           }
         />
 
         <Route
+        exact
           path="/"
           component={Inicio}
         />

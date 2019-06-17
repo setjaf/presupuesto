@@ -1,11 +1,17 @@
 import React,{Component} from 'react';
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
+import 'firebase/auth'
+import {Redirect} from 'react-router-dom'
 
 
 export default class registroUsuario extends Component {
   constructor(props) {
 
     super(props);
+
+    this.state = {
+      logged:false,
+    };
 
     this.handleClick = this.handleClick.bind(this);
   }
@@ -21,6 +27,10 @@ export default class registroUsuario extends Component {
 
         esto.props.logUsuario(user);
 
+        esto.setState({
+          logged:true,
+        });
+
       }
 
     );
@@ -28,10 +38,16 @@ export default class registroUsuario extends Component {
   }
 
   render(){
+    if (this.state.logged) {
+      return (
+        <Redirect to={'/nuevoUsuario/registrarIngresos'}/>
+      );
+    }else{
+      return(
+        <button onClick={()=>{this.handleClick();}}>Iniciar sesión con Google</button>
+      );
+    }
 
-    return(
-      <button onClick={()=>{this.handleClick();}}>Iniciar sesión con Google</button>
-    );
 
   }
 

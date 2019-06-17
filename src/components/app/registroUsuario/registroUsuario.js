@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
-import {Switch, Route} from 'react-router-dom';
+import {Switch, Route, Redirect} from 'react-router-dom';
 import Registro from './registro/registro';
+import Ingresos from './ingresos/ingresos'
 
 export default class registroUsuario extends Component{
 
@@ -8,11 +9,21 @@ export default class registroUsuario extends Component{
     return(
       <Switch>
         <Route
+          path = {`${this.props.match.url}/registrarIngresos`}
+          render={
+            (props)=>
+              this.props.state.logged?(
+                <Ingresos {...props}  inicializarIngresos={()=>this.props.inicializarIngresos()} borrarIngreso={()=>this.props.borrarIngreso()} registrarIngreso={(event)=>this.props.registrarIngreso(event)} listaIngresos={this.props.state.ingresosFijos} state={this.props.state}/>
+              ):(
+                <Redirect to={'/'}/>
+              )
+          }
+        />
+        <Route
           path='/'
           render={
-            props=>
-              <Registro logUsuario={(user)=>this.props.logUsuario(user)}/>
-
+            (props)=>
+              <Registro {...props} logUsuario={(user)=>this.props.logUsuario(user)}/>
           }
         />
       </Switch>
@@ -28,110 +39,7 @@ export default class registroUsuario extends Component{
 
 }
 
-function Ingresos(props) {
-  return(
-    <div>
-      <form onSubmit={props.registrarIngreso}>
-        <h4>Ingresos fijos en el periodo:</h4>
-
-        <div>
-          <label>
-            Concepto:
-          </label>
-          <input type="text" name="concepto"/>
-        </div>
-
-        <div>
-          <label>
-            Importe:
-          </label>
-          <input type="text" name="importe"/>
-        </div>
-
-        <input type="submit" value="Enviar"/>
-      </form>
-      <table>
-        <thead>
-          <tr>
-            <td>Concepto</td>
-            <td>Importe</td>
-          </tr>
-        </thead>
-
-        <tbody>
-          {
-            props.listaIngresos.map(
-              (ingreso, key)=>{
-                return(
-                  <tr key={key}>
-                    <td>{ingreso.concepto}</td>
-                    <td>${ingreso.importe}</td>
-                    <td><button onClick={()=>props.borrarIngreso(key)}>Borrar</button></td>
-                  </tr>
-                );
-              }
-            )
-          }
-        </tbody>
-
-      </table>
-    </div>
-  );
-}
-
-function Gastos(props) {
-  return(
-    <div>
-      <form onSubmit={props.registrarGasto}>
-        <h4>Gastos fijos en el periodo:</h4>
-
-        <div>
-          <label>
-            Concepto:
-          </label>
-          <input type="text" name="concepto"/>
-        </div>
-
-        <div>
-          <label>
-            Importe:
-          </label>
-          <input type="text" name="importe"/>
-        </div>
-
-        <input type="submit" value="Enviar"/>
-
-      </form>
-      <table>
-
-        <thead>
-          <tr>
-            <td>Concepto</td>
-            <td>Importe</td>
-          </tr>
-        </thead>
-
-        <tbody>
-          {
-            props.listaGastos.map(
-              (gasto, key)=>{
-                return(
-                  <tr key={key}>
-                    <td>{gasto.concepto}</td>
-                    <td>${gasto.importe}</td>
-                    <td><button onClick={()=>props.borrarGasto(key)}>Borrar</button></td>
-                  </tr>
-                );
-              }
-            )
-          }
-        </tbody>
-
-      </table>
-    </div>
-  );
-}
-
+/*
 function Ahorros(props) {
   return(
     <div>
@@ -268,3 +176,4 @@ function Total(props){
     </table>
   );
 }
+*/

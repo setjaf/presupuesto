@@ -59,11 +59,11 @@ export default class Gastos extends Component{
               </label>
               <br/>
               <label htmlFor="gastosPM">Mensual</label>
-              <input type="radio" name="periodicidad" value="1" id="gastosPM"/>
+              <input type="radio" name="periodicidad" value="1" id="gastosPM" required/>
               <label htmlFor="gastosPQ">Quincenal</label>
-              <input type="radio" name="periodicidad" value="2" id="gastosPQ"/>
+              <input type="radio" name="periodicidad" value="2" id="gastosPQ" required/>
               <label htmlFor="gastosPS">Semanal</label>
-              <input type="radio" name="periodicidad" value="3" id="gastosPS"/>
+              <input type="radio" name="periodicidad" value="3" id="gastosPS" required/>
             </div>
 
             <input type="submit" value="Enviar"/>

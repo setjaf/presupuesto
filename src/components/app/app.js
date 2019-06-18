@@ -25,7 +25,7 @@ export default class App extends Component{
       ingresosFijos:[],
       gastosFijos:[],
       ahorroInicial:[],
-      prestamosInicial:[],
+      prestamos:[],
     };
 
     this.registrarIngreso = this.registrarIngreso.bind(this);
@@ -201,22 +201,61 @@ export default class App extends Component{
 
   }
 
+  inicializarAhorros(){
+    const esto = this;
+    if(this.state.uid){
+      const docRef = this.userDoc.collection('Ahorros');
+      docRef.get().then((collection)=>{
+        let ahorros = [];
+        collection.docs.map(
+          (doc)=>{
+            const data = doc.data();
+            let ahorro = {...data}
+            ahorro.id = doc.id;
+            ahorros.push(ahorro);
+            return ahorro;
+          }
+        );
+        esto.setState({
+          ahorrosFijos:ahorros,
+        });
+      });
+    }
+
+  }
+
   registrarAhorro(event){
+
+    const esto = this;
 
     event.preventDefault();
 
-    let ahorro = this.state.ahorroInicial.slice(0,this.state.ahorroInicial.length);
+    let ahorros = this.state.ahorrosFijos.slice(0,this.state.ahorrosFijos.length);
 
-    ahorro.push(
-      FDtoJSON(
-        new FormData(event.target)
-      )
+    const ahorro = FDtoJSON(new FormData(event.target));
+
+    db.collection("Usuarios").doc(this.state.uid).collection("Ahorros").add({
+      concepto: ahorro.concepto,
+      importe: ahorro.importe,
+      periodicidad: ahorro.periodicidad,
+    }).then(
+      (docRef)=>{
+        alert("Ahorro guardado");
+
+        ahorro.id = docRef.id;
+
+        ahorros.push(
+          ahorro
+        );
+
+        esto.setState({
+          ahorrosFijos:ahorros,
+        });
+
+      }
+    ).catch(
+      ()=>alert("No se pudo guardar el ahorro")
     );
-
-    this.setState({
-      ahorroInicial:ahorro,
-    });
-
     event.target.reset();
   }
 
@@ -232,34 +271,86 @@ export default class App extends Component{
 
   }
 
+  inicializarPrestamos(){
+    const esto = this;
+    if(this.state.uid){
+      const docRef = this.userDoc.collection('Prestamos');
+      docRef.get().then((collection)=>{
+        let prestamos = [];
+        collection.docs.map(
+          (doc)=>{
+            const data = doc.data();
+            let prestamo = {...data}
+            prestamo.id = doc.id;
+            prestamos.push(prestamo);
+            return prestamo;
+          }
+        );
+        esto.setState({
+          prestamos:prestamos,
+        });
+      });
+    }
+
+  }
+
   registrarPrestamo(event){
+    const esto = this;
 
     event.preventDefault();
 
-    let prestamo = this.state.prestamosInicial.slice(0,this.state.prestamosInicial.length);
+    let prestamos = this.state.prestamos.slice(0,this.state.prestamos.length);
 
-    prestamo.push(
-      FDtoJSON(
-        new FormData(event.target)
-      )
+    const prestamo = FDtoJSON(new FormData(event.target));
+
+    db.collection("Usuarios").doc(this.state.uid).collection("Prestamos").add({
+      concepto: prestamo.concepto,
+      importe: prestamo.importe,
+      periodicidad: prestamo.periodicidad,
+      numPagos: prestamo.numPagos,
+      reaPagos: prestamo.reaPagos,
+    }).then(
+      (docRef)=>{
+        alert("Préstamo guardado");
+
+        prestamo.id = docRef.id;
+
+        prestamos.push(
+          prestamo
+        );
+
+        esto.setState({
+          prestamos:prestamos,
+        });
+
+      }
+    ).catch(
+      ()=>alert("No se pudo guardar el préstamo")
     );
-
-    this.setState({
-      prestamosInicial:prestamo,
-    });
-
     event.target.reset();
+
   }
 
   borrarPrestamo(prestamo){
 
-    let prestamos = this.state.prestamosInicial.slice(0,this.state.prestamosInicial.length);
+    const esto = this;
 
-    prestamos.splice(prestamo,1);
+    let prestamos = this.state.prestamos.slice(0,this.state.prestamos.length);
 
-    this.setState({
-      prestamosInicial:prestamos,
-    });
+    console.log(prestamos);
+    console.log(prestamo);
+
+    this.userDoc.collection("Prestamos").doc(prestamos[prestamo].id).delete().then(
+      ()=>{
+        alert('Se ha eliminado el préstamo');
+        
+        prestamos.splice(prestamo,1);
+
+        esto.setState({
+          prestamos:prestamos,
+        });
+      }
+    );
 
   }
 
@@ -295,8 +386,9 @@ export default class App extends Component{
               borrarGasto={(gasto)=>this.borrarGasto(gasto)}
               registrarAhorro={(event)=>this.registrarAhorro(event)}
               borrarAhorro={(ahorro)=>this.borrarGasto(ahorro)}
+              inicializarPrestamos={(event)=>this.inicializarPrestamos(event)}
               registrarPrestamo={(event)=>this.registrarPrestamo(event)}
-              borrarPrestamo={(prestamo)=>this.borrarGasto(prestamo)}
+              borrarPrestamo={(prestamo)=>this.borrarPrestamo(prestamo)}
               logUsuario={(user)=>this.logUsuario(user)}
             />)
           }

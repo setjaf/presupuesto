@@ -55,11 +55,11 @@ export default class Ingresos extends Component{
               </label>
               <br/>
               <label htmlFor="ingresosPM">Mensual</label>
-              <input type="radio" name="periodicidad" value="1" id="ingresosPM"/>
+              <input type="radio" name="periodicidad" value="1" id="ingresosPM" required/>
               <label htmlFor="ingresosPQ">Quincenal</label>
-              <input type="radio" name="periodicidad" value="2" id="ingresosPQ"/>
+              <input type="radio" name="periodicidad" value="2" id="ingresosPQ" required/>
               <label htmlFor="ingresosPS">Semanal</label>
-              <input type="radio" name="periodicidad" value="3" id="ingresosPS"/>
+              <input type="radio" name="periodicidad" value="3" id="ingresosPS" required/>
             </div>
 
             <input type="submit" value="Enviar"/>

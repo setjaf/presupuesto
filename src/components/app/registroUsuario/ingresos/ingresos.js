@@ -62,6 +62,13 @@ export default class Ingresos extends Component{
               <input type="radio" name="periodicidad" value="3" id="ingresosPS" required/>
             </div>
 
+            <div>
+              <label>
+                Día de pago:
+              </label>
+              <input type="date" name="diaPago" required/>
+            </div>
+
             <input type="submit" value="Enviar"/>
           </form>
           <table>
@@ -70,6 +77,7 @@ export default class Ingresos extends Component{
                 <td>Concepto</td>
                 <td>Importe</td>
                 <td>Periodicidad</td>
+                <td>Día de pago</td>
               </tr>
             </thead>
 
@@ -82,6 +90,7 @@ export default class Ingresos extends Component{
                         <td>{ingreso.concepto}</td>
                         <td>${ingreso.importe}</td>
                         <td>{ingreso.periodicidad}</td>
+                        <td>{ingreso.diaPago.toISOString().slice(0,10)}</td>
                         <td><button onClick={()=>this.props.borrarIngreso(key)}>Borrar</button></td>
                       </tr>
                     );

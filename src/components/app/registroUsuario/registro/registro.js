@@ -25,7 +25,7 @@ export default class registroUsuario extends Component {
 
         let user = result.user;
 
-        esto.props.logUsuario(user);
+        esto.props.regUsuario(user);
 
         esto.setState({
           logged:true,

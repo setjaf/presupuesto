@@ -14,6 +14,10 @@ export default class Ahorros extends Component {
         this.atras = this.atras.bind(this);
     }
 
+    componentDidMount(){
+      this.props.inicializarAhorros();
+    }
+
     siguiente(){
         this.setState({
             siguiente:true,
@@ -27,9 +31,14 @@ export default class Ahorros extends Component {
     }
 
     render(){
-        return(
+        if(this.state.siguiente){
+          return (<Redirect to={'/nuevoUsuario/resumen'} />);
+        }else if(this.state.anterios){
+          return (<Redirect to={'/nuevoUsuario/registrarPrestamos'}/>); 
+        }else{
+          return(
             <div>
-              <form onSubmit={props.registrarAhorro}>
+              <form onSubmit={this.props.registrarAhorro}>
                 <h4>Ahorros fijos en el periodo:</h4>
         
                 <div>
@@ -60,13 +69,13 @@ export default class Ahorros extends Component {
         
                 <tbody>
                   {
-                    props.listaAhorros.map(
+                    this.props.listaAhorros.map(
                       (ahorro, key)=>{
                         return(
                           <tr key={key}>
                             <td>{ahorro.concepto}</td>
                             <td>${ahorro.importe}</td>
-                            <td><button onClick={()=>props.borrarAhorro(key)}>Borrar</button></td>
+                            <td><button onClick={()=>this.props.borrarAhorro(key)}>Borrar</button></td>
                           </tr>
                         );
                       }
@@ -75,7 +84,11 @@ export default class Ahorros extends Component {
                 </tbody>
         
               </table>
+
+              <button onClick={()=>this.atras()}> Regresar </button>
+              <button onClick={()=>this.siguiente()}> Seguir </button>
             </div>
-        );
+          );
+        }
     }
 }

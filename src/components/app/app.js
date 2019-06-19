@@ -24,7 +24,7 @@ export default class App extends Component{
       },
       ingresosFijos:[],
       gastosFijos:[],
-      ahorroInicial:[],
+      ahorros:[],
       prestamos:[],
     };
 
@@ -37,7 +37,7 @@ export default class App extends Component{
     this.borrarGasto = this.borrarGasto.bind(this);
     this.borrarAhorro = this.borrarAhorro.bind(this);
     this.borrarPrestamo = this.borrarPrestamo.bind(this);
-    this.logUsuario = this.logUsuario.bind(this);
+    this.regUsuario = this.regUsuario.bind(this);
 
     this.userDoc = null;
     //Cuando el usuario inicia sesión se hace la referencia al documento del ususario en la base de datos
@@ -46,7 +46,7 @@ export default class App extends Component{
   inicializarIngresos(){
     const esto = this;
     if(this.state.uid){
-      const docRef = this.userDoc.collection('Ingresos');
+      const docRef = this.userDoc.collection('IngresosIniciales');
       docRef.get().then((collection)=>{
         let ingresos = [];
         collection.docs.map(
@@ -54,6 +54,7 @@ export default class App extends Component{
             const data = doc.data();
             let ingreso = {...data}
             ingreso.id = doc.id;
+            ingreso.diaPago = ingreso.diaPago.toDate();
             ingresos.push(ingreso);
             return ingreso;
           }
@@ -75,13 +76,13 @@ export default class App extends Component{
 
     const ingreso = FDtoJSON(new FormData(event.target));
 
-    db.collection("Usuarios").doc(this.state.uid).collection("Ingresos").add({
-      concepto: ingreso.concepto,
-      importe: ingreso.importe,
-      periodicidad: ingreso.periodicidad,
-    }).then(
+    let parts = ingreso.diaPago.split('-');
+
+    ingreso.diaPago = new Date(parts[0],parts[1]-1,parts[2]);
+
+    db.collection('Usuarios').doc(this.state.uid).collection('IngresosIniciales').add(ingreso).then(
       (docRef)=>{
-        alert("Ingreso guardado");
+        alert('Ingreso guardado');
 
         ingreso.id = docRef.id;
 
@@ -95,7 +96,7 @@ export default class App extends Component{
 
       }
     ).catch(
-      ()=>alert("No se pudo guardar el ingreso")
+      ()=>alert('No se pudo guardar el ingreso')
     );
     event.target.reset();
 
@@ -110,7 +111,7 @@ export default class App extends Component{
     console.log(ingresos);
     console.log(ingreso);
 
-    this.userDoc.collection("Ingresos").doc(ingresos[ingreso].id).delete().then(
+    this.userDoc.collection('IngresosIniciales').doc(ingresos[ingreso].id).delete().then(
       ()=>{
         ingresos.splice(ingreso,1);
 
@@ -125,7 +126,7 @@ export default class App extends Component{
   inicializarGastos(){
     const esto = this;
     if(this.state.uid){
-      const docRef = this.userDoc.collection('Gastos');
+      const docRef = this.userDoc.collection('GastosIniciales');
       docRef.get().then((collection)=>{
         let gastos = [];
         collection.docs.map(
@@ -155,13 +156,13 @@ export default class App extends Component{
 
     const gasto = FDtoJSON(new FormData(event.target));
 
-    db.collection("Usuarios").doc(this.state.uid).collection("Gastos").add({
+    db.collection('Usuarios').doc(this.state.uid).collection('GastosIniciales').add({
       concepto: gasto.concepto,
       importe: gasto.importe,
       periodicidad: gasto.periodicidad,
     }).then(
       (docRef)=>{
-        alert("Gasto guardado");
+        alert('Gasto guardado');
 
         gasto.id = docRef.id;
 
@@ -175,7 +176,7 @@ export default class App extends Component{
 
       }
     ).catch(
-      ()=>alert("No se pudo guardar el gasto")
+      ()=>alert('No se pudo guardar el gasto')
     );
     event.target.reset();
   }
@@ -189,7 +190,7 @@ export default class App extends Component{
     console.log(gastos);
     console.log(gasto);
 
-    this.userDoc.collection("Gastos").doc(gastos[gasto].id).delete().then(
+    this.userDoc.collection('GastosIniciales').doc(gastos[gasto].id).delete().then(
       ()=>{
         gastos.splice(gasto,1);
 
@@ -204,7 +205,7 @@ export default class App extends Component{
   inicializarAhorros(){
     const esto = this;
     if(this.state.uid){
-      const docRef = this.userDoc.collection('Ahorros');
+      const docRef = this.userDoc.collection('AhorrosIniciales');
       docRef.get().then((collection)=>{
         let ahorros = [];
         collection.docs.map(
@@ -217,7 +218,7 @@ export default class App extends Component{
           }
         );
         esto.setState({
-          ahorrosFijos:ahorros,
+          ahorros:ahorros,
         });
       });
     }
@@ -230,17 +231,16 @@ export default class App extends Component{
 
     event.preventDefault();
 
-    let ahorros = this.state.ahorrosFijos.slice(0,this.state.ahorrosFijos.length);
+    let ahorros = this.state.ahorros.slice(0,this.state.ahorros.length);
 
     const ahorro = FDtoJSON(new FormData(event.target));
 
-    db.collection("Usuarios").doc(this.state.uid).collection("Ahorros").add({
+    db.collection('Usuarios').doc(this.state.uid).collection('AhorrosIniciales').add({
       concepto: ahorro.concepto,
       importe: ahorro.importe,
-      periodicidad: ahorro.periodicidad,
     }).then(
       (docRef)=>{
-        alert("Ahorro guardado");
+        alert('Ahorro guardado');
 
         ahorro.id = docRef.id;
 
@@ -249,32 +249,41 @@ export default class App extends Component{
         );
 
         esto.setState({
-          ahorrosFijos:ahorros,
+          ahorros:ahorros,
         });
 
       }
     ).catch(
-      ()=>alert("No se pudo guardar el ahorro")
+      ()=>alert('No se pudo guardar el ahorro')
     );
     event.target.reset();
   }
 
   borrarAhorro(ahorro){
 
-    let ahorros = this.state.ahorroInicial.slice(0,this.state.ahorroInicial.length);
+    const esto = this;
 
-    ahorros.splice(ahorro,1);
+    let ahorros = this.state.ahorros.slice(0,this.state.ahorros.length);
 
-    this.setState({
-      ahorroInicial:ahorros,
-    });
+    console.log(ahorros);
+    console.log(ahorro);
+
+    this.userDoc.collection('AhorrosIniciales').doc(ahorros[ahorro].id).delete().then(
+      ()=>{
+        ahorros.splice(ahorro,1);
+
+        esto.setState({
+          ahorros:ahorros,
+        });
+      }
+    );
 
   }
 
   inicializarPrestamos(){
     const esto = this;
     if(this.state.uid){
-      const docRef = this.userDoc.collection('Prestamos');
+      const docRef = this.userDoc.collection('PrestamosIniciales');
       docRef.get().then((collection)=>{
         let prestamos = [];
         collection.docs.map(
@@ -303,7 +312,7 @@ export default class App extends Component{
 
     const prestamo = FDtoJSON(new FormData(event.target));
 
-    db.collection("Usuarios").doc(this.state.uid).collection("Prestamos").add({
+    db.collection('Usuarios').doc(this.state.uid).collection('PrestamosIniciales').add({
       concepto: prestamo.concepto,
       importe: prestamo.importe,
       periodicidad: prestamo.periodicidad,
@@ -311,7 +320,7 @@ export default class App extends Component{
       reaPagos: prestamo.reaPagos,
     }).then(
       (docRef)=>{
-        alert("Préstamo guardado");
+        alert('Préstamo guardado');
 
         prestamo.id = docRef.id;
 
@@ -325,7 +334,7 @@ export default class App extends Component{
 
       }
     ).catch(
-      ()=>alert("No se pudo guardar el préstamo")
+      ()=>alert('No se pudo guardar el préstamo')
     );
     event.target.reset();
 
@@ -340,7 +349,7 @@ export default class App extends Component{
     console.log(prestamos);
     console.log(prestamo);
 
-    this.userDoc.collection("Prestamos").doc(prestamos[prestamo].id).delete().then(
+    this.userDoc.collection('PrestamosIniciales').doc(prestamos[prestamo].id).delete().then(
       ()=>{
         alert('Se ha eliminado el préstamo');
         
@@ -354,7 +363,7 @@ export default class App extends Component{
 
   }
 
-  logUsuario(user){
+  regUsuario(user){
       this.setState({
         logged:true,
         nombre: user.displayName,
@@ -363,7 +372,14 @@ export default class App extends Component{
         uid: user.uid,
       });
       if (this.state.logged) {
-        this.userDoc = db.collection('Usuarios').doc(this.state.uid);
+        this.userDoc = db.collection('Usuarios').doc(this.state.uid)
+        
+        this.userDoc.set({
+          FechaRegistro:firebase.firestore.Timestamp.now(),
+          listo:false,
+        });
+
+        console.log(this.userDoc);
       }
 
   }
@@ -372,7 +388,7 @@ export default class App extends Component{
     return(
       <Switch>
         <Route
-          path="/nuevoUsuario"
+          path='/nuevoUsuario'
           render={
             (props)=>
             (<UsuarioNuevo
@@ -384,19 +400,20 @@ export default class App extends Component{
               inicializarGastos={(event)=>this.inicializarGastos(event)}
               registrarGasto={(event)=>this.registrarGasto(event)}
               borrarGasto={(gasto)=>this.borrarGasto(gasto)}
+              inicializarAhorros={(event)=>this.inicializarAhorros(event)}
               registrarAhorro={(event)=>this.registrarAhorro(event)}
               borrarAhorro={(ahorro)=>this.borrarGasto(ahorro)}
               inicializarPrestamos={(event)=>this.inicializarPrestamos(event)}
               registrarPrestamo={(event)=>this.registrarPrestamo(event)}
               borrarPrestamo={(prestamo)=>this.borrarPrestamo(prestamo)}
-              logUsuario={(user)=>this.logUsuario(user)}
+              regUsuario={(user)=>this.regUsuario(user)}
             />)
           }
         />
 
         <Route
         exact
-          path="/"
+          path='/'
           component={Inicio}
         />
       </Switch>

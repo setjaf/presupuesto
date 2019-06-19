@@ -4,6 +4,7 @@ import Registro from './registro/registro';
 import Ingresos from './ingresos/ingresos'
 import Gastos from './gastos/gastos'
 import Prestamos from './prestamos/prestamos'
+import Ahorros from './ahorros/ahorros'
 
 export default class registroUsuario extends Component{
 
@@ -44,10 +45,21 @@ export default class registroUsuario extends Component{
           }
         />
         <Route
+          path = {`${this.props.match.url}/registrarAhorros`}
+          render={
+            (props)=>
+              this.props.state.logged?(
+                <Ahorros {...props}  inicializarAhorros={()=>this.props.inicializarAhorros()} borrarAhorro={(ahorro)=>this.props.borrarAhorro(ahorro)} registrarAhorro={(event)=>this.props.registrarAhorro(event)} listaAhorros={this.props.state.ahorros} state={this.props.state}/>
+              ):(
+                <Redirect to={'/'}/>
+              )
+          }
+        />
+        <Route
           path='/'
           render={
             (props)=>
-              <Registro {...props} logUsuario={(user)=>this.props.logUsuario(user)}/>
+              <Registro {...props} regUsuario={(user)=>this.props.regUsuario(user)}/>
           }
         />
 
@@ -56,9 +68,9 @@ export default class registroUsuario extends Component{
       /*<div>
         <Ingresos borrarIngreso={()=>this.props.borrarIngreso()} registrarIngreso={(event)=>this.props.registrarIngreso(event)} listaIngresos={this.props.state.ingresosFijos}/>
         <Gastos borrarGasto={()=>this.props.borrarGasto()} registrarGasto={(event)=>this.props.registrarGasto(event)} listaGastos={this.props.state.gastosFijos}/>
-        <Ahorros borrarAhorro={()=>this.props.borrarAhorro()} registrarAhorro={(event)=>this.props.registrarAhorro(event)} listaAhorros={this.props.state.ahorroInicial}/>
+        <Ahorros borrarAhorro={()=>this.props.borrarAhorro()} registrarAhorro={(event)=>this.props.registrarAhorro(event)} listaAhorros={this.props.state.ahorros}/>
         <Prestamos borrarPrestamo={()=>this.props.borrarPrestamo()} registrarPrestamo={(event)=>this.props.registrarPrestamo(event)} listaPrestamos={this.props.state.prestamosInicial}/>
-        <Total listaIngresos={this.props.state.ingresosFijos} listaGastos={this.props.state.gastosFijos} listaAhorros={this.props.state.ahorroInicial} listaPrestamos={this.props.state.prestamosInicial} />
+        <Total listaIngresos={this.props.state.ingresosFijos} listaGastos={this.props.state.gastosFijos} listaAhorros={this.props.state.ahorros} listaPrestamos={this.props.state.prestamosInicial} />
       </div>*/
     );
   }

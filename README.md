@@ -1,68 +1,19 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+﻿# Sin nombre
 
-## Available Scripts
+# Visión General
 
-In the project directory, you can run:
+> El sitio permite comparar un **Presupuesto**, con la duración del periodo o ciclo(mensual, quincenal o semanal) que tú desees, y el **Estado Actual** . Este sitio permite realizar el registro de ingresos, gastos, préstamos a plazos, ahorros y dinero prestado.
 
-### `npm start`
+ - En el sitio existen dos partes, el **Presupuesto** y el **Estado Actual**. El **Presupuesto** es loa parte con la que primeramente se va a tener contacto, en esta se registra toda la información del periodo del presupuesto, los datos que se sabe se van a repetir cada que termine un periodo y comience uno nuevo, esto se explicará mejor en los puntos siguientes. El **Estado Actual** es el lugar en donde se registra toda la actividad que se tiene en el periodo, este registro se puede realizar en cualquier momento. Tiene una dependencia del **Presupuesto** (esta dependencia se explicara posteriormente) que nos va a permitir automatizar algunas tareas.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+# Detalles del funcionamiento
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+ - El usuario del sitio debe contar con una cuenta de Google para hacer uso del sitio, con esta cuenta el es como se va a identificar al usuario para guardar toda su información. Una vez que el usuario se registre, es necesario que nos indique la **Duración del periodo** (puede ser mensual, quincenal y semanal) y un **Día de referencia como inicio del periodo**, para que desde esa fecha el sitio puede trabajar con el periodo.
+## Registro de Presupuesto
 
-### `npm test`
+En el registro del **Presupuesto** se deben incluir los **Ingresos**, **Gastos**, **Préstamos** y **Ahorros**.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+ - **Registrar Ingresos** en el **Presupuesto** implica indicar *Nombre del ingreso* o *Concepto*, *Importe* o *Cantidad de dinero que se va a recibir* en el periodo completo. Este registro es importante para la sección de **Estado Actual** ya que estos ingresos cada que inicie un periodo se van a agregar después de confirmar al "Capital Disponible" del **Estado Actual**.
+ - **Registrar Gastos** en el **Presupuesto** implica indicar *Nombre del gasto* o *Concepto*, *Importe* o *Cantidad de dinero que se va a gastar* en el periodo completo.  Los *Conceptos* que se registren aquí, se van a utilizar en la sección de **Estado Actual** en donde cada vez que se registre un nuevo gasto se podrá colocar en alguno de los conceptos que se registraron o se registrará por defecto en *Otros Gastos*, esto nos permitirá realizar una mejor comparación del **Presupuesto** con el **Estado Actual**.
+ - **Registrar Préstamos** en el **Presupuesto** implica *Nombre del préstamo* o *Concepto*, *Importe* o *Cantidad de dinero que se solicitó*, *Plazo del préstamo* (mensual, quincenal, semanal), *Número de plazos*
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify

@@ -33,7 +33,7 @@ export default class Ahorros extends Component {
     render(){
         if(this.state.siguiente){
           return (<Redirect to={'/nuevoUsuario/resumen'} />);
-        }else if(this.state.anterios){
+        }else if(this.state.atras){
           return (<Redirect to={'/nuevoUsuario/registrarPrestamos'}/>); 
         }else{
           return(
